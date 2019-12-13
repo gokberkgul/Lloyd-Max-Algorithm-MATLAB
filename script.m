@@ -8,11 +8,7 @@ hist_res = 1000;
 samples = 1000000;
 
 %% define r.v. Y
-x_sample = linspace(0,log(4),samples);
-x1 = exp(-x_sample/2);
-x2 = exp(-x_sample/2);
-y = log(randsample(x1,samples)) - log(randsample(x2,samples));
-y = y.*2;
+y = randn(samples);
 
 %% plot the histogram
 h_y = histogram(y,hist_res);
@@ -82,42 +78,6 @@ while (1)
     end;
     mse_prev = mse_new;
 end;
-
-mse_new;
-sqnr_nonuni_db = 10*log10(y_power/mse_new)
-improvement = abs((mse_new-uni_mse)/mse_new*100)
-boundaries
-reconstruction
-histogram(err_nonuni,1000);
-
-temp_record_data =  audiorecorder(200000,16,1);
-disp('record')
-recordblocking(temp_record_data, 5);
-disp('record over')
-
-recoded_sound = getaudiodata(temp_record_data, 'double');
-recoded_sound = transpose(recoded_sound);
-voicehist = histogram(recoded_sound,1000,'Normalization','pdf');
-
-voicepower = calculate_pow(recoded_sound);
-voicepower_in_dB = 10*log10(voicepower)
-
-voice_uni_quantized = quantize_uniform(recoded_sound, 1, -1, 64);
-err = recoded_sound - voice_uni_quantized;
-histogram(err,1000,'Normalization','pdf') %pdf of error
-err_power = calculate_pow(err);
-sqnr = voicepower/err_power;
-sqnr_db = 10*log10(sqnr)
-
-%% mu compand
-compressed = log(1+64.*abs(recoded_sound))/log(1+64).*sign(recoded_sound);
-voice_nonuni_quantized = quantize_uniform(compressed, max(compressed), min(compressed), 64);
-expanded = sign(compressed).*1/64.*((1+64).^abs(compressed)-1);
-err_64 = recoded_sound - expanded;
-err_power_64 = calculate_pow(err_64);
-sqnr_64 = voicepower/err_power_64;
-sqnr_db_64 = 10*log10(sqnr_64)
-
 
 
 %% function for calculating power
